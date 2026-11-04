@@ -37,3 +37,29 @@ impl ThreeFingerHand {
         bus.sync_write(&goals)
     }
 }
+
+impl ThreeFingerHand {
+    /// Halts finger closure on any finger whose measured load exceeds `max_load_nm`.
+    pub fn command_compliant_grasp(
+        &self,
+        bus: &mut dyn ActuatorBus,
+        preset: HandGraspPreset,
+        max_load_nm: f64,
+    ) -> Result<usize, &'static str> {
+        let (t, i, m) = match preset {
+            HandGraspPreset::OpenPalm => (0.0, 0.0, 0.0),
+            HandGraspPreset::PrecisionPinch => (1.1, 1.1, 0.2),
+            HandGraspPreset::IndexPoint => (1.2, 0.0, 1.4),
+            HandGraspPreset::PowerGrip => (1.3, 1.4, 1.4),
+        };
+        let mut active_goals = Vec::with_capacity(3);
+        for (id, target_rad) in [(self.thumb_id, t), (self.index_id, i), (self.middle_id, m)] {
+            if let Some(tel) = bus.read_telemetry(id) {
+                if tel.load_nm <= max_load_nm {
+                    active_goals.push(ServoGoal { id, position_rad: target_rad, speed_rad_s: 3.0 });
+                }
+            }
+        }
+        bus.sync_write(&active_goals)
+    }
+}

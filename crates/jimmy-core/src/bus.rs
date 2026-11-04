@@ -61,3 +61,11 @@ impl ActuatorBus for SimDaisyChainBus {
         self.servos.iter().map(|s| s.id).collect()
     }
 }
+
+impl SimDaisyChainBus {
+    pub fn set_simulated_load(&mut self, id: u8, load_nm: f64) {
+        if let Some(s) = self.servos.iter_mut().find(|s| s.id == id) {
+            s.load_nm = load_nm;
+        }
+    }
+}
