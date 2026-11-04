@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="jimmy">
+  <xacro:property name="robot_height" value="0.38" />
+  <link name="base_footprint"/>
+  <link name="wheeled_leg_base_link"/>
+  <link name="torso_link"/>
+  <link name="head_visor_link"/>
+
+  <!-- 3-Point Waist Pivot (Yaw / Pitch / Roll) -->
+  <joint name="waist_yaw_joint" type="revolute">
+    <parent link="wheeled_leg_base_link"/>
+    <child link="torso_link"/>
+    <origin xyz="0 0 0.14" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.57" upper="1.57" effort="3.0" velocity="4.0"/>
+  </joint>
+
+  <!-- 3-Point Neck Visor Pivot -->
+  <joint name="neck_pitch_joint" type="revolute">
+    <parent link="torso_link"/>
+    <child link="head_visor_link"/>
+    <origin xyz="0 0 0.16" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.78" upper="0.78" effort="1.5" velocity="5.0"/>
+  </joint>
+
+  <!-- Modular Arm Macro with 3-Pivot Shoulder, Elbow & Wrist Flange -->
+  <xacro:macro name="jimmy_arm" params="prefix reflect">
+    <link name="${prefix}_upper_arm_link"/>
+    <link name="${prefix}_forearm_link"/>
+    <link name="${prefix}_wrist_flange_link"/>
+    <joint name="${prefix}_shoulder_pitch_joint" type="revolute">
+      <parent link="torso_link"/>
+      <child link="${prefix}_upper_arm_link"/>
+      <origin xyz="0 ${reflect * 0.095} 0.12" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit lower="-2.4" upper="2.4" effort="3.0" velocity="4.5"/>
+    </joint>
+    <joint name="${prefix}_elbow_pitch_joint" type="revolute">
+      <parent link="${prefix}_upper_arm_link"/>
+      <child link="${prefix}_forearm_link"/>
+      <origin xyz="0 0 -0.085" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit lower="0.0" upper="2.3" effort="2.5" velocity="4.5"/>
+    </joint>
+  </xacro:macro>
+  <xacro:jimmy_arm prefix="left" reflect="1"/>
+  <xacro:jimmy_arm prefix="right" reflect="-1"/>
+</robot>
