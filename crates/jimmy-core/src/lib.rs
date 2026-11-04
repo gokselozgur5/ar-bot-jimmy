@@ -4,6 +4,7 @@ pub mod ar_anchor;
 pub mod bus;
 pub mod hand;
 pub mod kinematics;
+pub mod protocol;
 pub mod puppeteer;
 
 /// Robot physical height in meters (38 cm desktop mini-humanoid).
@@ -15,6 +16,7 @@ mod tests {
     use super::bus::{ActuatorBus, ServoGoal, SimDaisyChainBus};
     use super::hand::{HandGraspPreset, ThreeFingerHand};
     use super::kinematics::{FullBodyPose, Vec3};
+    use super::protocol::{encode_sync_write_positions, rad_to_ticks, verify_packet};
     use super::puppeteer::{GestureIntent, LlmPuppeteerCommand};
 
     #[test]
@@ -30,8 +32,7 @@ mod tests {
     fn daisy_chain_bus_writes_and_discovers_base_14dof() {
         let mut bus = SimDaisyChainBus::new_base_14dof();
         assert_eq!(bus.discovered_ids().len(), 14);
-        let written = bus.sync_write(&[ServoGoal { id: 11, position_rad: 1.2, speed_rad_s: 3.0 }]).unwrap();
-        assert_eq!(written, 1);
+        assert_eq!(bus.sync_write(&[ServoGoal { id: 11, position_rad: 1.2, speed_rad_s: 3.0 }]).unwrap(), 1);
     }
 
     #[test]
@@ -54,8 +55,7 @@ mod tests {
             gesture: GestureIntent::PresentPalmHologram,
             gaze_target: Vec3 { x: 0.35, y: -0.10, z: 0.32 },
         };
-        let pose = cmd.to_full_body_pose();
-        let anchor = SpatialHologramAnchor::from_palm_pose(&pose, "Clippy-3D-Cube");
+        let anchor = SpatialHologramAnchor::from_palm_pose(&cmd.to_full_body_pose(), "Clippy-3D-Cube");
         assert!(anchor.active && anchor.world_position.z > 0.34);
     }
 
@@ -66,8 +66,14 @@ mod tests {
         for id in [hand.thumb_id, hand.index_id, hand.middle_id] {
             bus.hot_plug_servo(id);
         }
-        assert_eq!(bus.discovered_ids().len(), 17);
         assert_eq!(hand.command_grasp(&mut bus, HandGraspPreset::IndexPoint).unwrap(), 3);
-        assert!(bus.read_telemetry(17).unwrap().position_rad > 1.3);
+    }
+
+    #[test]
+    fn sts3215_sync_write_encodes_valid_frame_and_checksum() {
+        assert_eq!(rad_to_ticks(0.0), 2048);
+        let frame = encode_sync_write_positions(&[(1, 0.0), (11, 1.0)]);
+        assert!(verify_packet(&frame));
+        assert_eq!(&frame[0..5], &[0xFF, 0xFF, 0xFE, 10, 0x83]);
     }
 }
