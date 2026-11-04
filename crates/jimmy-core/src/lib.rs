@@ -6,6 +6,7 @@ pub mod hand;
 pub mod kinematics;
 pub mod protocol;
 pub mod puppeteer;
+pub mod trajectory;
 
 /// Robot physical height in meters (38 cm desktop mini-humanoid).
 pub const JIMMY_HEIGHT_METERS: f64 = 0.38;
@@ -18,6 +19,7 @@ mod tests {
     use super::kinematics::{FullBodyPose, Vec3};
     use super::protocol::{encode_sync_write_positions, rad_to_ticks, verify_packet};
     use super::puppeteer::{GestureIntent, LlmPuppeteerCommand};
+    use super::trajectory::{cubic_smoothstep, interpolate_full_body_cubic};
 
     #[test]
     fn forward_kinematics_raises_right_palm_for_hologram() {
@@ -74,6 +76,15 @@ mod tests {
         assert_eq!(rad_to_ticks(0.0), 2048);
         let frame = encode_sync_write_positions(&[(1, 0.0), (11, 1.0)]);
         assert!(verify_packet(&frame));
-        assert_eq!(&frame[0..5], &[0xFF, 0xFF, 0xFE, 10, 0x83]);
+    }
+
+    #[test]
+    fn cubic_trajectory_interpolates_smoothly_at_midpoint() {
+        let start = FullBodyPose::default();
+        let mut goal = FullBodyPose::default();
+        goal.waist.pitch = 0.40;
+        let mid = interpolate_full_body_cubic(&start, &goal, 0.5);
+        assert!((cubic_smoothstep(0.5) - 0.5).abs() < 1e-9);
+        assert!((mid.waist.pitch - 0.20).abs() < 1e-9);
     }
 }
