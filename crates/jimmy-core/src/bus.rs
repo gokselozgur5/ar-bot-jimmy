@@ -42,3 +42,22 @@ impl SimDaisyChainBus {
         }
     }
 }
+
+impl ActuatorBus for SimDaisyChainBus {
+    fn sync_write(&mut self, goals: &[ServoGoal]) -> Result<usize, &'static str> {
+        for g in goals {
+            let s = self.servos.iter_mut().find(|s| s.id == g.id).ok_or("servo ID not on bus")?;
+            if s.temp_c > self.max_temp_c {
+                return Err("thermal overload guard triggered");
+            }
+            s.position_rad = g.position_rad.clamp(-3.14, 3.14);
+        }
+        Ok(goals.len())
+    }
+    fn read_telemetry(&self, id: u8) -> Option<ServoTelemetry> {
+        self.servos.iter().copied().find(|s| s.id == id)
+    }
+    fn discovered_ids(&self) -> Vec<u8> {
+        self.servos.iter().map(|s| s.id).collect()
+    }
+}
