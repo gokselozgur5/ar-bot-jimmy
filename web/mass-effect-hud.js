@@ -39,5 +39,5 @@ export function createMassEffectOmniHud() {
   const core = new THREE.Mesh(new THREE.OctahedronGeometry(0.025, 1), new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true }));
   core.position.y = 0.035;
   group.add(screen, ring, core);
-  return { group, core, ring, updateText: (t, s) => { drawHud(t, s); tex.needsUpdate = true; } };
+  return { group, screen, core, ring, updateText: (t, s) => { drawHud(t, s); tex.needsUpdate = true; } };
 }
