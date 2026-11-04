@@ -1,5 +1,6 @@
 //! Core robotics, LLM gesture puppeteer, and AR spatial anchor engine for Jimmy.
 
+pub mod ar_anchor;
 pub mod bus;
 pub mod kinematics;
 pub mod puppeteer;
@@ -9,6 +10,7 @@ pub const JIMMY_HEIGHT_METERS: f64 = 0.38;
 
 #[cfg(test)]
 mod tests {
+    use super::ar_anchor::SpatialHologramAnchor;
     use super::bus::{ActuatorBus, ServoGoal, SimDaisyChainBus};
     use super::kinematics::{FullBodyPose, Vec3};
     use super::puppeteer::{GestureIntent, LlmPuppeteerCommand};
@@ -40,5 +42,20 @@ mod tests {
         };
         let pose = cmd.to_full_body_pose();
         assert!(pose.neck.roll > 0.3 && pose.waist.pitch > 0.25);
+    }
+
+    #[test]
+    fn openxr_palm_hologram_activates_when_presenting_palm() {
+        let cmd = LlmPuppeteerCommand {
+            speech_reply: "Projecting 3D hologram on my right palm.".into(),
+            visor_expression: "hologram_focus",
+            gesture: GestureIntent::PresentPalmHologram,
+            gaze_target: Vec3 { x: 0.35, y: -0.10, z: 0.32 },
+        };
+        let pose = cmd.to_full_body_pose();
+        let anchor = SpatialHologramAnchor::from_palm_pose(&pose, "Clippy-3D-Cube");
+        assert!(anchor.active);
+        assert_eq!(anchor.parent_tf_frame, "right_wrist_flange_link");
+        assert!(anchor.world_position.z > 0.34);
     }
 }
