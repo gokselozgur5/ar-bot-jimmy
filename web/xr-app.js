@@ -40,10 +40,32 @@ const POSES = {
   FriendlyWave: { wP: 0.0, nR: 0.18, rSP: -1.55, rSR: -0.45, rEP: -0.9, lSP: 0.1, lSR: 0.1, msg: 'Hey Kanka! Welcome to Augmented Reality!' }
 };
 let target = POSES.PresentPalmHologram;
+let audioCtx = null;
+function playRobotVoice(idx) {
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const notes = [[440, 587, 880], [523, 659, 1046], [392, 330, 523], [659, 784, 1174]][idx % 4];
+    notes.forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = i === 1 ? 'triangle' : 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.08);
+      osc.frequency.exponentialRampToValueAtTime(freq * 1.25, audioCtx.currentTime + i * 0.08 + 0.07);
+      gain.gain.setValueAtTime(0.18, audioCtx.currentTime + i * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.08 + 0.075);
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start(audioCtx.currentTime + i * 0.08);
+      osc.stop(audioCtx.currentTime + i * 0.08 + 0.08);
+    });
+  } catch (_) {}
+}
+
 window.setJimmyGesture = (name) => {
   target = POSES[name] || POSES.PresentPalmHologram;
   omniHud.updateText(name, target.msg);
   document.getElementById('telemetry').textContent = `[LLM Speech]: "${target.msg}"`;
+  playRobotVoice(NAMES.indexOf(name));
   if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); window.speechSynthesis.speak(new SpeechSynthesisUtterance(target.msg)); }
 };
 window.setJimmyGesture('PresentPalmHologram');
