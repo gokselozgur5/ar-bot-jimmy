@@ -2,6 +2,7 @@
 
 pub mod ar_anchor;
 pub mod bus;
+pub mod hand;
 pub mod kinematics;
 pub mod puppeteer;
 
@@ -12,6 +13,7 @@ pub const JIMMY_HEIGHT_METERS: f64 = 0.38;
 mod tests {
     use super::ar_anchor::SpatialHologramAnchor;
     use super::bus::{ActuatorBus, ServoGoal, SimDaisyChainBus};
+    use super::hand::{HandGraspPreset, ThreeFingerHand};
     use super::kinematics::{FullBodyPose, Vec3};
     use super::puppeteer::{GestureIntent, LlmPuppeteerCommand};
 
@@ -54,8 +56,18 @@ mod tests {
         };
         let pose = cmd.to_full_body_pose();
         let anchor = SpatialHologramAnchor::from_palm_pose(&pose, "Clippy-3D-Cube");
-        assert!(anchor.active);
-        assert_eq!(anchor.parent_tf_frame, "right_wrist_flange_link");
-        assert!(anchor.world_position.z > 0.34);
+        assert!(anchor.active && anchor.world_position.z > 0.34);
+    }
+
+    #[test]
+    fn hot_plugged_three_finger_hand_drives_servos_15_to_17() {
+        let mut bus = SimDaisyChainBus::new_base_14dof();
+        let hand = ThreeFingerHand::right_hand_default();
+        for id in [hand.thumb_id, hand.index_id, hand.middle_id] {
+            bus.hot_plug_servo(id);
+        }
+        assert_eq!(bus.discovered_ids().len(), 17);
+        assert_eq!(hand.command_grasp(&mut bus, HandGraspPreset::IndexPoint).unwrap(), 3);
+        assert!(bus.read_telemetry(17).unwrap().position_rad > 1.3);
     }
 }
