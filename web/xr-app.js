@@ -11,7 +11,20 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.xr.enabled = true;
 document.body.appendChild(renderer.domElement);
-document.body.appendChild(ARButton.createButton(renderer, { requiredFeatures: ['local-floor'] }));
+document.body.appendChild(ARButton.createButton(renderer, {
+  requiredFeatures: ['local-floor'],
+  optionalFeatures: ['dom-overlay'],
+  domOverlay: { root: document.body }
+}));
+
+const NAMES = ['PresentPalmHologram', 'CyberClippyLean', 'ItalianShrug', 'FriendlyWave'];
+let idx = 0;
+for (const i of [0, 1]) {
+  renderer.xr.getController(i).addEventListener('select', () => {
+    idx = (idx + 1) % NAMES.length;
+    window.setJimmyGesture(NAMES[idx]);
+  });
+}
 
 scene.add(new THREE.AmbientLight(0xffffff, 0.9), new THREE.DirectionalLight(0x38bdf8, 1.5));
 const jimmy = createJimmyRobot();
