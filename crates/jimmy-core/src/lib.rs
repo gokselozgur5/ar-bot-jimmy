@@ -87,4 +87,17 @@ mod tests {
         assert!((cubic_smoothstep(0.5) - 0.5).abs() < 1e-9);
         assert!((mid.waist.pitch - 0.20).abs() < 1e-9);
     }
+
+    #[test]
+    fn compliant_grasp_skips_finger_exceeding_contact_torque_limit() {
+        let mut bus = SimDaisyChainBus::new_base_14dof();
+        let hand = ThreeFingerHand::right_hand_default();
+        for id in [hand.thumb_id, hand.index_id, hand.middle_id] {
+            bus.hot_plug_servo(id);
+        }
+        bus.set_simulated_load(hand.index_id, 0.85);
+        let active = hand.command_compliant_grasp(&mut bus, HandGraspPreset::PowerGrip, 0.45).unwrap();
+        assert_eq!(active, 2);
+        assert!((bus.read_telemetry(hand.index_id).unwrap().position_rad - 0.0).abs() < 1e-6);
+    }
 }
