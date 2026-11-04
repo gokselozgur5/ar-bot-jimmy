@@ -1,0 +1,8 @@
+[package]
+name = "jimmy-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "Core 3-pivot kinematics, serial bus servo protocol, LLM gesture puppeteer, and OpenXR spatial anchor engine for Jimmy"
