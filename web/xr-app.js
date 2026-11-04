@@ -28,7 +28,7 @@ for (const i of [0, 1]) {
 
 scene.add(new THREE.AmbientLight(0xffffff, 0.9), new THREE.DirectionalLight(0x38bdf8, 1.5));
 const jimmy = createJimmyRobot();
-jimmy.root.position.set(0, 0, -0.42);
+jimmy.root.position.set(0, -0.22, -0.45);
 scene.add(jimmy.root);
 const omniHud = createMassEffectOmniHud();
 jimmy.rightArm.palm.add(omniHud.group);
@@ -44,6 +44,7 @@ window.setJimmyGesture = (name) => {
   target = POSES[name] || POSES.PresentPalmHologram;
   omniHud.updateText(name, target.msg);
   document.getElementById('telemetry').textContent = `[LLM Speech]: "${target.msg}"`;
+  if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); window.speechSynthesis.speak(new SpeechSynthesisUtterance(target.msg)); }
 };
 window.setJimmyGesture('PresentPalmHologram');
 
@@ -58,5 +59,6 @@ renderer.setAnimationLoop((t) => {
   jimmy.leftArm.sh.rotation.z += (target.lSR - jimmy.leftArm.sh.rotation.z) * s;
   omniHud.core.rotation.y = t * 0.0025;
   omniHud.ring.rotation.z = -t * 0.0018;
+  omniHud.screen.lookAt(camera.position);
   renderer.render(scene, camera);
 });
