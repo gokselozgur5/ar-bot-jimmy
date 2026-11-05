@@ -2,6 +2,7 @@
 resolver = "2"
 members = [
     "crates/jimmy-core",
+    "crates/jimmy-daemon",
 ]
 
 [workspace.package]
