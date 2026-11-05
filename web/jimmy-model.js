@@ -1,5 +1,5 @@
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
-import { createSciFiMaterials, buildCurvedHeadAndBase } from './jimmy-materials.js';
+import { createSciFiMaterials, buildCurvedHeadAndBase } from './jimmy-materials.js?v=4';
 
 export function createJimmyRobot(visorTexture = null) {
   const root = new THREE.Group();
