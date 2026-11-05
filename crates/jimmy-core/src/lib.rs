@@ -20,7 +20,7 @@ mod tests {
     use super::hand::{HandGraspPreset, ThreeFingerHand};
     use super::ik::solve_right_arm_ik;
     use super::kinematics::{FullBodyPose, Vec3};
-    use super::protocol::{encode_sync_write_positions, rad_to_ticks, verify_packet};
+    use super::protocol::{encode_set_servo_id, encode_sync_write_positions, rad_to_ticks, verify_packet};
     use super::puppeteer::{GestureIntent, LlmPuppeteerCommand};
     use super::ros2_bridge::Ros2JointState17;
     use super::trajectory::{cubic_smoothstep, interpolate_full_body_cubic};
@@ -122,5 +122,12 @@ mod tests {
         let payload = js.to_rosbridge_json();
         assert!(payload.contains("\"topic\":\"/joint_states\""));
         assert!(payload.contains("\"right_index_joint\""));
+    }
+
+    #[test]
+    fn sts3215_set_servo_id_encodes_valid_eeprom_frame() {
+        let frame = encode_set_servo_id(1, 15);
+        assert!(verify_packet(&frame));
+        assert_eq!(frame[6], 15);
     }
 }
