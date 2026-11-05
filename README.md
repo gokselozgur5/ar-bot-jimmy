@@ -1,5 +1,7 @@
 # Jimmy (`ar-bot-jimmy`) — 38 cm Modular Full-Body ROS 2 + AR Humanoid Companion
 
+![Meta Quest 3 Live Passthrough Demo](docs/media/quest3_passthrough_live.gif)
+
 **Jimmy** is a 38 cm (1.5-span) desktop mini-humanoid companion robot combining **ROS 2 full-body 3-pivot kinematics**, **daisy-chain serial bus actuators**, an **Embodied LLM Puppeteer** (modern Cyber-Clippy persona), and an **OpenXR / Augmented Reality spatial hologram layer**.
 
 ## System Architecture
