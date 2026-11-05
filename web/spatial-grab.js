@@ -38,6 +38,7 @@ export function setupSpatialGrabAndPlace(renderer, jimmyRoot, buttons = [], onBu
       for (const src of [...ctrls, ...hands.filter(Boolean)]) {
         const tip = src.joints?.['index-finger-tip'] || src;
         const p = new THREE.Vector3().setFromMatrixPosition(tip.matrixWorld);
+        if (p.lengthSq() < 1e-5) continue;
         for (const btn of buttons) {
           const bp = new THREE.Vector3().setFromMatrixPosition(btn.matrixWorld);
           if (p.distanceTo(bp) < 0.065) { lastPokeMs = timeMs; onButton(btn.userData.gestureName); return; }

@@ -1,38 +1,39 @@
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
-import { STLLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/STLLoader.js';
+
+function parseAsciiStl(text) {
+  const verts = [];
+  const re = /vertex\s+([\d.eE+-]+)\s+([\d.eE+-]+)\s+([\d.eE+-]+)/g;
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    verts.push(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]));
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
+  geo.computeVertexNormals();
+  return geo;
+}
 
 export function setupCadStlOverlay(jimmy) {
-  const loader = new STLLoader();
   const group = new THREE.Group();
   group.visible = false;
   jimmy.waistPivot.add(group);
   let loaded = false;
+  const cadMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true, transparent: true, opacity: 0.55 });
 
-  const cadMat = new THREE.MeshPhysicalMaterial({
-    color: 0x38bdf8,
-    roughness: 0.2,
-    metalness: 0.3,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.65
-  });
-
-  function loadOnce() {
+  async function loadOnce() {
     if (loaded) return;
     loaded = true;
-    loader.load('../cad/stl/03_torso_armor_shell.stl', (geo) => {
-      const m = new THREE.Mesh(geo, cadMat);
-      m.scale.setScalar(0.001);
-      m.rotation.x = -Math.PI / 2;
-      group.add(m);
-    });
-    loader.load('../cad/stl/04_cyber_clippy_head_visor.stl', (geo) => {
-      const m = new THREE.Mesh(geo, cadMat);
-      m.scale.setScalar(0.001);
-      m.rotation.x = -Math.PI / 2;
-      m.position.y = 0.142;
-      group.add(m);
-    });
+    try {
+      const [torsoTxt, headTxt] = await Promise.all([
+        fetch('../cad/stl/03_torso_armor_shell.stl').then((r) => r.text()),
+        fetch('../cad/stl/04_cyber_clippy_head_visor.stl').then((r) => r.text())
+      ]);
+      const torsoMesh = new THREE.Mesh(parseAsciiStl(torsoTxt), cadMat);
+      torsoMesh.scale.setScalar(0.001); torsoMesh.rotation.x = -Math.PI / 2;
+      const headMesh = new THREE.Mesh(parseAsciiStl(headTxt), cadMat);
+      headMesh.scale.setScalar(0.001); headMesh.rotation.x = -Math.PI / 2; headMesh.position.y = 0.142;
+      group.add(torsoMesh, headMesh);
+    } catch (_) {}
   }
 
   function toggle() {
