@@ -3,6 +3,7 @@
 pub mod ar_anchor;
 pub mod bus;
 pub mod hand;
+pub mod ik;
 pub mod kinematics;
 pub mod protocol;
 pub mod puppeteer;
@@ -16,6 +17,7 @@ mod tests {
     use super::ar_anchor::SpatialHologramAnchor;
     use super::bus::{ActuatorBus, ServoGoal, SimDaisyChainBus};
     use super::hand::{HandGraspPreset, ThreeFingerHand};
+    use super::ik::solve_right_arm_ik;
     use super::kinematics::{FullBodyPose, Vec3};
     use super::protocol::{encode_sync_write_positions, rad_to_ticks, verify_packet};
     use super::puppeteer::{GestureIntent, LlmPuppeteerCommand};
@@ -99,5 +101,15 @@ mod tests {
         let active = hand.command_compliant_grasp(&mut bus, HandGraspPreset::PowerGrip, 0.45).unwrap();
         assert_eq!(active, 2);
         assert!((bus.read_telemetry(hand.index_id).unwrap().position_rad - 0.0).abs() < 1e-6);
+    }
+
+    #[test]
+    fn analytical_ik_solves_reachable_desk_target_consistent_with_fk() {
+        let target = Vec3 { x: 0.12, y: -0.11, z: 0.22 };
+        let arm = solve_right_arm_ik(target, 0.0);
+        let mut pose = FullBodyPose::default();
+        pose.right_arm = arm;
+        let fk = pose.right_wrist_flange_position();
+        assert!((fk.x - target.x).abs() < 0.02 && (fk.z - target.z).abs() < 0.02);
     }
 }
