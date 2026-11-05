@@ -13,23 +13,43 @@ export function createSciFiMaterials(visorTexture) {
   };
 }
 
-export function buildCurvedHeadAndBase(root, waistPivot, neckPivot, m) {
-  const baseSkirt = new THREE.Mesh(new THREE.CylinderGeometry(0.072, 0.092, 0.028, 36), m.trim);
-  baseSkirt.position.y = 0.014;
-  const baseDome = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.072, 0.024, 36), m.armor);
-  baseDome.position.y = 0.038;
-  const rimRing = new THREE.Mesh(new THREE.TorusGeometry(0.082, 0.003, 12, 48), m.glowCyan);
-  rimRing.rotation.x = Math.PI / 2; rimRing.position.y = 0.026;
-  root.add(baseSkirt, baseDome, rimRing);
-  for (const s of [-1, 1]) {
-    const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.024, 0.016, 24), m.titanium);
-    wheel.rotation.z = Math.PI / 2; wheel.position.set(s * 0.076, 0.024, 0);
-    const legStrut = new THREE.Mesh(new THREE.CapsuleGeometry(0.019, 0.058, 12, 24), m.armor);
-    legStrut.position.set(s * 0.038, 0.088, 0);
-    const kneeRing = new THREE.Mesh(new THREE.TorusGeometry(0.020, 0.0025, 10, 24), m.glowCyan);
-    kneeRing.rotation.x = Math.PI / 2; kneeRing.position.set(s * 0.038, 0.088, 0);
-    root.add(wheel, legStrut, kneeRing);
+function makeSplitHalfPlatform(side, m) {
+  const shape = new THREE.Shape();
+  const r = 0.068;
+  if (side > 0) {
+    shape.absarc(0, 0, r, -Math.PI / 2, Math.PI / 2, false);
+    shape.lineTo(0, -r);
+  } else {
+    shape.absarc(0, 0, r, Math.PI / 2, Math.PI * 1.5, false);
+    shape.lineTo(0, r);
   }
+  const geo = new THREE.ExtrudeGeometry(shape, { depth: 0.016, bevelEnabled: true, bevelThickness: 0.004, bevelSize: 0.004, bevelSegments: 4, curveSegments: 28 });
+  geo.rotateX(Math.PI / 2);
+  const pad = new THREE.Mesh(geo, m.trim);
+  pad.position.set(-side * 0.026, 0.018, 0);
+  const topCap = new THREE.Mesh(new THREE.SphereGeometry(0.025, 20, 14), m.armor);
+  topCap.scale.set(0.95, 0.55, 1.35); topCap.position.set(0, 0.018, 0.006);
+  const group = new THREE.Group();
+  group.add(pad, topCap);
+  return group;
+}
+
+export function buildSplitLegsAndHead(root, neckPivot, m) {
+  const pelvis = new THREE.Mesh(new THREE.CapsuleGeometry(0.024, 0.044, 12, 24), m.titanium);
+  pelvis.rotation.z = Math.PI / 2; pelvis.position.set(0, 0.132, 0);
+  root.add(pelvis);
+  const makeLeg = (s) => {
+    const hip = new THREE.Group(); hip.position.set(s * 0.036, 0.126, 0);
+    const hipBall = new THREE.Mesh(new THREE.SphereGeometry(0.020, 20, 16), m.trim);
+    const thigh = new THREE.Mesh(new THREE.CapsuleGeometry(0.016, 0.034, 12, 20), m.armor); thigh.position.y = -0.028;
+    const knee = new THREE.Group(); knee.position.y = -0.056;
+    const kneeJoint = new THREE.Mesh(new THREE.SphereGeometry(0.017, 18, 14), m.titanium);
+    const shin = new THREE.Mesh(new THREE.CapsuleGeometry(0.015, 0.034, 12, 20), m.armor); shin.position.y = -0.026;
+    const ankle = new THREE.Group(); ankle.position.y = -0.056;
+    ankle.add(makeSplitHalfPlatform(s, m));
+    knee.add(kneeJoint, shin, ankle); hip.add(hipBall, thigh, knee); root.add(hip);
+    return { hip, knee, ankle };
+  };
   const headDome = new THREE.Mesh(new THREE.SphereGeometry(0.048, 36, 28), m.armor);
   headDome.scale.set(1.12, 0.92, 0.96); headDome.position.y = 0.044;
   const visorBezel = new THREE.Mesh(new THREE.CapsuleGeometry(0.024, 0.038, 16, 24), m.titanium);
@@ -44,4 +64,5 @@ export function buildCurvedHeadAndBase(root, waistPivot, neckPivot, m) {
     earRing.rotation.y = Math.PI / 2; earRing.position.set(s * 0.062, 0.044, 0);
     neckPivot.add(ear, earRing);
   }
+  return { leftLeg: makeLeg(1), rightLeg: makeLeg(-1) };
 }
