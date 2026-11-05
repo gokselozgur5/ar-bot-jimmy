@@ -2,6 +2,7 @@
 
 pub mod ar_anchor;
 pub mod bus;
+pub mod cad_export;
 pub mod hand;
 pub mod ik;
 pub mod kinematics;
@@ -129,5 +130,13 @@ mod tests {
         let frame = encode_set_servo_id(1, 15);
         assert!(verify_packet(&frame));
         assert_eq!(frame[6], 15);
+    }
+
+    #[test]
+    fn watertight_stl_export_generates_valid_facets_and_bounds() {
+        let stl = super::cad_export::StlBoxSpec::STS3215_BRACKET.to_ascii_stl();
+        assert!(stl.starts_with("solid sts3215_gimbal_bracket\n"));
+        assert_eq!(stl.matches("facet normal").count(), 12);
+        assert!(stl.ends_with("endsolid sts3215_gimbal_bracket\n"));
     }
 }
