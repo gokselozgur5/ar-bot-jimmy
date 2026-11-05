@@ -2,8 +2,8 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
 export function createSpatialHoloMenu(names) {
   const menuGroup = new THREE.Group();
-  menuGroup.position.set(-0.22, 0.24, 0.04);
-  menuGroup.rotation.y = 0.35;
+  menuGroup.position.set(-0.34, 0.28, 0.12);
+  menuGroup.rotation.y = 0.28;
   const buttons = [];
 
   names.forEach((name, idx) => {

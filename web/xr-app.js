@@ -16,7 +16,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.xr.enabled = true;
 document.body.appendChild(renderer.domElement);
-document.body.appendChild(ARButton.createButton(renderer, { requiredFeatures: ['local-floor'], optionalFeatures: ['dom-overlay'], domOverlay: { root: document.body } }));
+document.body.appendChild(ARButton.createButton(renderer, { requiredFeatures: ['local-floor'], optionalFeatures: ['dom-overlay', 'hand-tracking'], domOverlay: { root: document.body } }));
 
 scene.add(new THREE.AmbientLight(0xffffff, 0.9), new THREE.DirectionalLight(0x38bdf8, 1.5));
 const visorFace = createVisorFace();
@@ -27,14 +27,15 @@ const omniHud = createMassEffectOmniHud();
 jimmy.rightArm.palm.add(omniHud.group);
 
 const NAMES = ['PresentPalmHologram', 'CyberClippyLean', 'ItalianShrug', 'FriendlyWave'];
-const holoMenu = createSpatialHoloMenu(NAMES);
+const holoMenu = createSpatialHoloMenu([...NAMES, 'Live3dIkOrb']);
 jimmy.root.add(holoMenu.menuGroup);
-const spatialGrab = setupSpatialGrabAndPlace(renderer, jimmy.root);
 const ikOrb = createInteractiveIkOrb(jimmy.root);
 window.toggleJimmyIkOrb = () => {
   const on = ikOrb.toggle();
   omniHud.updateText('Live 3D IK Orb', on ? '3-Pivot IK tracking floating Desk Orb!' : 'Returned to gesture preset mode.');
 };
+const triggerMenuAction = (g) => (g === 'Live3dIkOrb' ? window.toggleJimmyIkOrb() : window.setJimmyGesture(g));
+const spatialGrab = setupSpatialGrabAndPlace(renderer, jimmy.root, holoMenu.buttons, triggerMenuAction);
 const raycaster = new THREE.Raycaster();
 const tempMat = new THREE.Matrix4();
 let idx = 0;
@@ -43,11 +44,12 @@ for (const i of [0, 1]) {
   ctrl.add(holoMenu.makeLaser());
   scene.add(ctrl);
   ctrl.addEventListener('select', () => {
+    if (spatialGrab.isGrabbing()) return;
     tempMat.identity().extractRotation(ctrl.matrixWorld);
     raycaster.ray.origin.setFromMatrixPosition(ctrl.matrixWorld);
     raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMat);
     const hits = raycaster.intersectObjects(holoMenu.buttons);
-    if (hits.length > 0) { window.setJimmyGesture(hits[0].object.userData.gestureName); return; }
+    if (hits.length > 0) { triggerMenuAction(hits[0].object.userData.gestureName); return; }
     idx = (idx + 1) % NAMES.length;
     window.setJimmyGesture(NAMES[idx]);
   });
