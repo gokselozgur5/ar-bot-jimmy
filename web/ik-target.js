@@ -17,9 +17,11 @@ export function createInteractiveIkOrb(jimmyRoot) {
 
   let active = false;
   let phase = 0;
+  orbGroup.visible = false;
 
   function toggleIkMode() {
     active = !active;
+    orbGroup.visible = active;
     return active;
   }
 
@@ -38,5 +40,5 @@ export function createInteractiveIkOrb(jimmyRoot) {
     jimmy.rightArm.sh.rotation.z = Math.atan2(dx, 0.12) * 0.7;
     jimmy.rightArm.elbow.rotation.x = -0.65;
   }
-  return { orbGroup, toggleIkMode, isActive: () => active, update };
+  return { orb: orbGroup, orbGroup, toggle: toggleIkMode, toggleIkMode, isActive: () => active, update };
 }
