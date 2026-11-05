@@ -1,5 +1,5 @@
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
-import { createSciFiMaterials, buildCurvedHeadAndBase } from './jimmy-materials.js?v=4';
+import { createSciFiMaterials, buildSplitLegsAndHead } from './jimmy-materials.js?v=5';
 
 export function createJimmyRobot(visorTexture = null) {
   const root = new THREE.Group();
@@ -8,10 +8,9 @@ export function createJimmyRobot(visorTexture = null) {
   waistPivot.position.set(0, 0.14, 0);
   const neckPivot = new THREE.Group();
   neckPivot.position.set(0, 0.142, 0);
-  buildCurvedHeadAndBase(root, waistPivot, neckPivot, m);
+  const { leftLeg, rightLeg } = buildSplitLegsAndHead(root, neckPivot, m);
 
-  // Sculpted Astro-Bot / EVE Hourglass Torso Carapace + Segmented Waist Bellows
-  const waistCore = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.042, 0.032, 28), m.titanium);
+  const waistCore = new THREE.Mesh(new THREE.CylinderGeometry(0.034, 0.038, 0.032, 28), m.titanium);
   waistCore.position.y = 0.012;
   const lowerTorso = new THREE.Mesh(new THREE.CylinderGeometry(0.056, 0.038, 0.068, 32), m.armor);
   lowerTorso.scale.set(1.08, 1.0, 0.82); lowerTorso.position.y = 0.054;
@@ -54,5 +53,5 @@ export function createJimmyRobot(visorTexture = null) {
     waistPivot.add(sh);
     return { sh, elbow, palm, fingers };
   };
-  return { root, waistPivot, neckPivot, leftArm: makeArm(1), rightArm: makeArm(-1) };
+  return { root, waistPivot, neckPivot, leftArm: makeArm(1), rightArm: makeArm(-1), leftLeg, rightLeg };
 }

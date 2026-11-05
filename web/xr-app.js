@@ -1,14 +1,14 @@
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 import { ARButton } from 'https://unpkg.com/three@0.160.0/examples/jsm/webxr/ARButton.js';
-import { createJimmyRobot } from './jimmy-model.js?v=4';
-import { createMassEffectOmniHud } from './mass-effect-hud.js?v=4';
-import { createVisorFace } from './visor-face.js?v=4';
-import { createSpatialHoloMenu } from './holo-menu.js?v=4';
-import { setupLiveConversation } from './llm-chat.js?v=4';
-import { setupSpatialGrabAndPlace } from './spatial-grab.js?v=4';
-import { createInteractiveIkOrb } from './ik-target.js?v=4';
-import { setupCadStlOverlay } from './stl-loader.js?v=4';
-import { setupMirrorHandTeleop } from './hand-teleop.js?v=4';
+import { createJimmyRobot } from './jimmy-model.js?v=5';
+import { createMassEffectOmniHud } from './mass-effect-hud.js?v=5';
+import { createVisorFace } from './visor-face.js?v=5';
+import { createSpatialHoloMenu } from './holo-menu.js?v=5';
+import { setupLiveConversation } from './llm-chat.js?v=5';
+import { setupSpatialGrabAndPlace } from './spatial-grab.js?v=5';
+import { createInteractiveIkOrb } from './ik-target.js?v=5';
+import { setupCadStlOverlay } from './stl-loader.js?v=5';
+import { setupMirrorHandTeleop } from './hand-teleop.js?v=5';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.05, 20);
@@ -28,7 +28,7 @@ scene.add(jimmy.root);
 const omniHud = createMassEffectOmniHud();
 jimmy.rightArm.palm.add(omniHud.group);
 
-const NAMES = ['PresentPalmHologram', 'CyberClippyLean', 'ItalianShrug', 'FriendlyWave'];
+const NAMES = ['PresentPalmHologram', 'CyberClippyLean', 'ItalianShrug', 'FriendlyWave', 'BipedalWalk'];
 const ALL_MODES = [...NAMES, 'Live3dIkOrb'];
 const holoMenu = createSpatialHoloMenu(ALL_MODES);
 jimmy.root.add(holoMenu.menuGroup);
@@ -73,9 +73,11 @@ const POSES = {
   PresentPalmHologram: { wP: 0.05, nR: 0.0, rSP: -1.15, rSR: 0.0, rEP: -0.55, lSP: 0.1, lSR: 0.1, fG: [0, 0, 0], msg: 'Quest 3 Passthrough Omni-Tool Ready!' },
   CyberClippyLean: { wP: 0.28, nR: 0.32, rSP: -0.65, rSR: -0.2, rEP: -1.0, lSP: 0.2, lSR: 0.15, fG: [0.9, 0.0, 1.1], msg: 'Looks like you are writing Rust! Need help?' },
   ItalianShrug: { wP: -0.05, nR: -0.2, rSP: -0.45, rSR: -0.65, rEP: -1.25, lSP: -0.45, lSR: 0.65, fG: [0.2, 0.2, 0.2], msg: 'Why use 1 monitor when Quest 3 gives you 5?' },
-  FriendlyWave: { wP: 0.0, nR: 0.18, rSP: -1.55, rSR: -0.45, rEP: -0.9, lSP: 0.1, lSR: 0.1, fG: [0.0, 0.0, 0.0], msg: 'Hey Kanka! Welcome to Augmented Reality!' }
+  FriendlyWave: { wP: 0.0, nR: 0.18, rSP: -1.55, rSR: -0.45, rEP: -0.9, lSP: 0.1, lSR: 0.1, fG: [0.0, 0.0, 0.0], msg: 'Hey Kanka! Welcome to Augmented Reality!' },
+  BipedalWalk: { wP: 0.08, nR: 0.0, rSP: -0.55, rSR: -0.15, rEP: -0.75, lSP: -0.55, lSR: 0.15, fG: [0.2, 0.2, 0.2], msg: 'Split-platform bipedal walking gait active!' }
 };
 let target = POSES.PresentPalmHologram;
+let walkingContinuous = false, stepUntilMs = 0;
 let audioCtx = null;
 function playRobotVoice(k) {
   try {
@@ -93,6 +95,8 @@ function playRobotVoice(k) {
 }
 window.setJimmyGesture = (name, customMsg = null) => {
   if (ikOrb?.orb?.visible) ikOrb.toggle?.();
+  walkingContinuous = (name === 'BipedalWalk');
+  stepUntilMs = performance.now() + 1400;
   target = POSES[name] || POSES.PresentPalmHologram;
   const msg = customMsg || target.msg;
   omniHud.updateText(name, msg);
@@ -115,6 +119,22 @@ renderer.setAnimationLoop((t) => {
   jimmy.leftArm.sh.rotation.x += (target.lSP - jimmy.leftArm.sh.rotation.x) * s;
   jimmy.leftArm.sh.rotation.z += (target.lSR - jimmy.leftArm.sh.rotation.z) * s;
   jimmy.rightArm.fingers.forEach((f, i) => { f.rotation.x += (target.fG[i] - f.rotation.x) * s; });
+  if (walkingContinuous || t < stepUntilMs) {
+    const g = t * 0.0085, sw = Math.sin(g) * 0.36;
+    const lK = Math.max(0, Math.sin(g)) * 0.45, rK = Math.max(0, -Math.sin(g)) * 0.45;
+    jimmy.leftLeg.hip.rotation.x += (sw - jimmy.leftLeg.hip.rotation.x) * 0.2;
+    jimmy.leftLeg.knee.rotation.x += (lK - jimmy.leftLeg.knee.rotation.x) * 0.2;
+    jimmy.leftLeg.ankle.rotation.x = -jimmy.leftLeg.hip.rotation.x - jimmy.leftLeg.knee.rotation.x;
+    jimmy.rightLeg.hip.rotation.x += (-sw - jimmy.rightLeg.hip.rotation.x) * 0.2;
+    jimmy.rightLeg.knee.rotation.x += (rK - jimmy.rightLeg.knee.rotation.x) * 0.2;
+    jimmy.rightLeg.ankle.rotation.x = -jimmy.rightLeg.hip.rotation.x - jimmy.rightLeg.knee.rotation.x;
+    jimmy.waistPivot.rotation.z = Math.cos(g) * 0.05;
+  } else {
+    for (const leg of [jimmy.leftLeg, jimmy.rightLeg]) {
+      leg.hip.rotation.x *= 0.85; leg.knee.rotation.x *= 0.85; leg.ankle.rotation.x *= 0.85;
+    }
+    jimmy.waistPivot.rotation.z *= 0.85;
+  }
   ikOrb.update(t, jimmy);
   handTeleop.update(jimmy);
   omniHud.core.rotation.y = t * 0.0025;
