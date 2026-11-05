@@ -19,12 +19,20 @@ jobs:
       - name: Install stable Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Run workspace unit tests (12/12)
+      - name: Run workspace unit tests (13/13)
         run: cargo test --workspace -- --nocapture
 
-      - name: Verify WebXR & URDF assets exist
+      - name: Verify WebXR, URDF & 7 Printable STL CAD assets exist
         run: |
           test -f ros2/jimmy_description/urdf/jimmy_full_body.urdf.xacro
           test -f web/index.html
           test -f web/xr-app.js
           test -f docs/media/quest3_passthrough_live.gif
+          test -f docs/media/cad_parts_preview.png
+          test -f cad/stl/01_wheeled_base_shell.stl
+          test -f cad/stl/02_waist_3pivot_gimbal.stl
+          test -f cad/stl/03_torso_armor_shell.stl
+          test -f cad/stl/04_cyber_clippy_head_visor.stl
+          test -f cad/stl/05_upper_arm_bionic_link.stl
+          test -f cad/stl/06_forearm_wrist_flange.stl
+          test -f cad/stl/07_modular_3finger_hand.stl

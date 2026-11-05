@@ -17,7 +17,13 @@
 | **Phase 11: Spatial Grab & Place** | Quest 3 `squeezestart`/`squeezeend` desk placement & Anchor Ring | Merged (`#44`, `#49`) | Live in WebXR Passthrough |
 | **Phase 12: 3D IK Target Orb** | Interactive 3D Desk Holo-Orb driving real-time 3-pivot arm & gaze | Merged (`#45`, `#50`) | Live in WebXR Passthrough |
 | **Phase 13: Wiring & ID Provisioner**| `encode_set_servo_id` EEPROM writer & 12V/7.4V wiring harness guide | Merged (`#46`, `#51`) | Verified (`sts3215_set_servo_id_encodes_valid_eeprom_frame`) |
-| **Phase 14: GitHub Actions CI** | Automated `cargo test --workspace` (`12/12`) & asset verification | Merged (`#47`, `#52`) | Enforced on `main` & PRs |
+| **Phase 14: GitHub Actions CI** | Automated `cargo test --workspace` (`13/13`) & asset verification | Merged (`#47`, `#52`) | Enforced on `main` & PRs |
+| **Phase 15: Bare-Hand Poke & Grab** | Quest 3 bare-hand index poke, pinch-grab onto desk & GIF v3 | Merged (`#53`, `#54`, `#55`) | Field-tested on physical desk |
+| **Phase 16: Rust STL Mesh Exporter** | Watertight 12-facet ASCII `.stl` generator (`cad_export.rs`) | Merged (`#56`, `#61`) | Verified (`watertight_stl_export_generates_valid_facets_and_bounds`) |
+| **Phase 17: OpenSCAD & STL Library** | 7 parametric `.scad` & compiled 2-manifold `.stl` parts (`cad/stl/`) | Merged (`#57`, `#62`) | Verified `Simple: yes` in CGAL |
+| **Phase 18: Curved Sci-Fi Chassis** | Astro-Bot/EVE curved PBR clearcoat chassis + Three.js `STLLoader` | Merged (`#58`, `#63`) | Live on GitHub Pages HTTPS |
+| **Phase 19: Hand Mirror Teleop** | Real-time Quest 3 bare-hand arm & 3-finger shadowing (`hand-teleop.js`) | Merged (`#59`, `#64`) | Live on GitHub Pages HTTPS |
+| **Phase 20: 3D Printing & Slicer** | PrusaSlicer settings table, Blender guide & STL CI checks | Merged (`#60`, `#65`) | Ready for Prusa 3D printing |
 
 ## Hardware Bill of Materials (BOM) Target
 
