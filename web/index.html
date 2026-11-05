@@ -23,7 +23,8 @@
       <button class="me-btn" onclick="setJimmyGesture('FriendlyWave')">Friendly Wave</button>
       <button class="me-btn" onclick="toggleJimmyIkOrb()">🎯 3D IK Orb</button>
       <button class="me-btn" onclick="toggleJimmyCadStl()">🖨️ CAD STL</button>
-      <button class="me-btn" style="grid-column: span 2;" onclick="toggleJimmyTeleop()">✋ Mirror Hand Teleop</button>
+      <button class="me-btn" onclick="setJimmyGesture('BipedalWalk')">🚶 Step Walk</button>
+      <button class="me-btn" onclick="toggleJimmyTeleop()">✋ Mirror Teleop</button>
     </div>
     <div style="display:flex;gap:6px;margin-top:10px;">
       <input id="jimmy-input" placeholder="Talk to Jimmy (TR/EN)..." style="flex:1;min-width:0;background:#020617;color:#f8fafc;border:1px solid #38bdf8;border-radius:6px;padding:6px 8px;font-size:0.78rem;" onkeydown="if(event.key==='Enter')askJimmyText()" />
@@ -32,6 +33,6 @@
     </div>
     <pre id="telemetry" style="margin-top:10px;font-size:0.75rem;color:#fbbf24;white-space:pre-wrap;"></pre>
   </div>
-  <script type="module" src="./xr-app.js?v=4"></script>
+  <script type="module" src="./xr-app.js?v=5"></script>
 </body>
 </html>
