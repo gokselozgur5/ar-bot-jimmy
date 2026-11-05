@@ -105,11 +105,11 @@ mod tests {
 
     #[test]
     fn analytical_ik_solves_reachable_desk_target_consistent_with_fk() {
-        let target = Vec3 { x: 0.12, y: -0.11, z: 0.22 };
+        let target = Vec3 { x: 0.11, y: -0.10, z: 0.28 };
         let arm = solve_right_arm_ik(target, 0.0);
         let mut pose = FullBodyPose::default();
         pose.right_arm = arm;
         let fk = pose.right_wrist_flange_position();
-        assert!((fk.x - target.x).abs() < 0.02 && (fk.z - target.z).abs() < 0.02);
+        assert!((fk.x - target.x).abs() < 1e-4 && (fk.z - target.z).abs() < 1e-4);
     }
 }
