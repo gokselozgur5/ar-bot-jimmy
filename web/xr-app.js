@@ -1,14 +1,14 @@
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 import { ARButton } from 'https://unpkg.com/three@0.160.0/examples/jsm/webxr/ARButton.js';
-import { createJimmyRobot } from './jimmy-model.js';
-import { createMassEffectOmniHud } from './mass-effect-hud.js';
-import { createVisorFace } from './visor-face.js';
-import { createSpatialHoloMenu } from './holo-menu.js';
-import { setupLiveConversation } from './llm-chat.js';
-import { setupSpatialGrabAndPlace } from './spatial-grab.js';
-import { createInteractiveIkOrb } from './ik-target.js';
-import { setupCadStlOverlay } from './stl-loader.js';
-import { setupMirrorHandTeleop } from './hand-teleop.js';
+import { createJimmyRobot } from './jimmy-model.js?v=4';
+import { createMassEffectOmniHud } from './mass-effect-hud.js?v=4';
+import { createVisorFace } from './visor-face.js?v=4';
+import { createSpatialHoloMenu } from './holo-menu.js?v=4';
+import { setupLiveConversation } from './llm-chat.js?v=4';
+import { setupSpatialGrabAndPlace } from './spatial-grab.js?v=4';
+import { createInteractiveIkOrb } from './ik-target.js?v=4';
+import { setupCadStlOverlay } from './stl-loader.js?v=4';
+import { setupMirrorHandTeleop } from './hand-teleop.js?v=4';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.05, 20);
@@ -92,7 +92,7 @@ function playRobotVoice(k) {
   } catch (_) {}
 }
 window.setJimmyGesture = (name, customMsg = null) => {
-  if (ikOrb.orb.visible) ikOrb.toggle();
+  if (ikOrb?.orb?.visible) ikOrb.toggle?.();
   target = POSES[name] || POSES.PresentPalmHologram;
   const msg = customMsg || target.msg;
   omniHud.updateText(name, msg);

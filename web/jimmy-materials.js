@@ -2,9 +2,9 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
 export function createSciFiMaterials(visorTexture) {
   return {
-    armor: new THREE.MeshPhysicalMaterial({ color: 0xf8fafc, roughness: 0.14, metalness: 0.08, clearcoat: 1.0, clearcoatRoughness: 0.1 }),
-    trim: new THREE.MeshPhysicalMaterial({ color: 0x0284c7, roughness: 0.22, metalness: 0.65, clearcoat: 0.8 }),
-    titanium: new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.35, metalness: 0.85 }),
+    armor: new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.2, metalness: 0.15 }),
+    trim: new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.28, metalness: 0.55 }),
+    titanium: new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.35, metalness: 0.75 }),
     glowCyan: new THREE.MeshBasicMaterial({ color: 0x38bdf8 }),
     glowAmber: new THREE.MeshBasicMaterial({ color: 0xf59e0b }),
     visor: visorTexture
@@ -14,7 +14,6 @@ export function createSciFiMaterials(visorTexture) {
 }
 
 export function buildCurvedHeadAndBase(root, waistPivot, neckPivot, m) {
-  // Multi-tier Hover/Wheeled Base with recessed drive wheels & glowing cyan rim
   const baseSkirt = new THREE.Mesh(new THREE.CylinderGeometry(0.072, 0.092, 0.028, 36), m.trim);
   baseSkirt.position.y = 0.014;
   const baseDome = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.072, 0.024, 36), m.armor);
@@ -31,7 +30,6 @@ export function buildCurvedHeadAndBase(root, waistPivot, neckPivot, m) {
     kneeRing.rotation.x = Math.PI / 2; kneeRing.position.set(s * 0.038, 0.088, 0);
     root.add(wheel, legStrut, kneeRing);
   }
-  // Curved Astro-Bot Ellipsoid Head Dome + Ear Comms Pods + Wrap-Around Visor
   const headDome = new THREE.Mesh(new THREE.SphereGeometry(0.048, 36, 28), m.armor);
   headDome.scale.set(1.12, 0.92, 0.96); headDome.position.y = 0.044;
   const visorBezel = new THREE.Mesh(new THREE.CapsuleGeometry(0.024, 0.038, 16, 24), m.titanium);
