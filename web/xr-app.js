@@ -6,6 +6,7 @@ import { createVisorFace } from './visor-face.js';
 import { createSpatialHoloMenu } from './holo-menu.js';
 import { setupLiveConversation } from './llm-chat.js';
 import { setupSpatialGrabAndPlace } from './spatial-grab.js';
+import { createInteractiveIkOrb } from './ik-target.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.05, 20);
@@ -29,6 +30,11 @@ const NAMES = ['PresentPalmHologram', 'CyberClippyLean', 'ItalianShrug', 'Friend
 const holoMenu = createSpatialHoloMenu(NAMES);
 jimmy.root.add(holoMenu.menuGroup);
 const spatialGrab = setupSpatialGrabAndPlace(renderer, jimmy.root);
+const ikOrb = createInteractiveIkOrb(jimmy.root);
+window.toggleJimmyIkOrb = () => {
+  const on = ikOrb.toggle();
+  omniHud.updateText('Live 3D IK Orb', on ? '3-Pivot IK tracking floating Desk Orb!' : 'Returned to gesture preset mode.');
+};
 const raycaster = new THREE.Raycaster();
 const tempMat = new THREE.Matrix4();
 let idx = 0;
@@ -92,6 +98,7 @@ renderer.setAnimationLoop((t) => {
   jimmy.leftArm.sh.rotation.x += (target.lSP - jimmy.leftArm.sh.rotation.x) * s;
   jimmy.leftArm.sh.rotation.z += (target.lSR - jimmy.leftArm.sh.rotation.z) * s;
   jimmy.rightArm.fingers.forEach((f, i) => { f.rotation.x += (target.fG[i] - f.rotation.x) * s; });
+  ikOrb.update(t, jimmy);
   omniHud.core.rotation.y = t * 0.0025;
   omniHud.ring.rotation.z = -t * 0.0018;
   omniHud.screen.lookAt(camera.position);
