@@ -8,7 +8,10 @@
 | **Phase 2: Serial Servo Bus** | `ActuatorBus` trait, daisy-chain IDs `1..=14`, thermal guard | Merged (`#2`, `#7`) | Hardware UART/RS-485 Feetech STS3215 driver (`#13`) |
 | **Phase 3: LLM Puppeteer** | Conversational intent to 3-pivot full-body pose synthesis | Merged (`#3`, `#8`) | Live voice/vision stream & cubic spline interpolator (`#14`) |
 | **Phase 4: OpenXR / AR Link** | `right_wrist_flange_link` to palm hologram spatial anchor | Merged (`#4`, `#9`) | Interactive 3D Three.js / WebXR skeleton + hologram (`#15`) |
-| **Phase 5: 3-Finger Hand** | Hot-plug wrist socket expansion (`IDs 15..=20`) | Merged (`#5`, `#10`, `#11`) | Current-based tactile grasp torque cut-off (`#16`) |
+| **Phase 5: 3-Finger Hand** | Hot-plug wrist socket expansion (`IDs 15..=20`) | Merged (`#5`, `#10`, `#11`) | Compliant grasp torque cutoff merged (`#16`, `#26`) |
+| **Phase 6: Visor Eyes & 3D Fingers** | Dynamic Cyber-Clippy blinking visor & 3-finger 3D meshes | Merged (`#31`, `#36`) | Verified in WebXR scene |
+| **Phase 7: 3-Pivot Analytical IK** | Closed-form shoulder/elbow Inverse Kinematics (`ik.rs`) | Merged (`#32`, `#34`, `#35`) | Verified `< 0.1 mm` FK round-trip |
+| **Phase 8: 3D Laser & Holo-Menu** | Quest 3 3D controller laser raycaster & floating holo-buttons | Merged (`#33`, `#37`) | Live on GitHub Pages HTTPS |
 
 ## Hardware Bill of Materials (BOM) Target
 
