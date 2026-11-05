@@ -1,30 +1,41 @@
-// Jimmy Part 01: Wheeled Hover-Pod Base Shell (180 mm diameter, 3S battery bay & wheel wells)
-$fn = 64;
+// Jimmy Part 01: Split-Platform Bipedal Feet & Articulated Leg Struts (Left & Right Independent Halves)
+$fn = 56;
 
-module wheeled_base_shell() {
+module half_platform_foot(side = 1) {
     difference() {
         union() {
-            // Chamfered aerodynamic hover-pod base skirt
-            cylinder(h = 12, d1 = 180, d2 = 168);
-            translate([0, 0, 12]) cylinder(h = 28, d1 = 168, d2 = 132);
-            // Center pedestal collar for 3-Pivot Waist Yaw Servo (ID 1)
-            translate([0, 0, 40]) cylinder(h = 14, d1 = 86, d2 = 68);
-            // Left and right wheel fender arches
-            for (sx = [-1, 1]) {
-                translate([sx * 72, 0, 18]) rotate([0, 90, 0])
-                    cylinder(h = 18, d = 44, center = true);
+            // D-shaped semi-circular stabilizer foot platform (one half per foot, 14 mm center gap)
+            intersection() {
+                cylinder(h = 14, d1 = 156, d2 = 144);
+                translate([side * 45, 0, 7]) cube([76, 170, 20], center = true);
+            }
+            // Ankle ball-socket cuff & lower/upper bionic leg struts
+            translate([side * 36, 0, 14]) {
+                sphere(d = 26);
+                cylinder(h = 44, d1 = 24, d2 = 22);
+                translate([0, 0, 44]) sphere(d = 26);
+                translate([0, 0, 44]) cylinder(h = 44, d1 = 24, d2 = 26);
+                translate([0, 0, 88]) sphere(d = 28);
             }
         }
-        // Bottom 3S 18650 Li-Ion battery + buck converter cavity (110 x 72 x 32 mm)
-        translate([0, 0, 15]) cube([110, 72, 32], center = true);
-        // STS3215 Waist Yaw Servo (ID 1) pocket (40.4 x 20.4 x 36 mm)
-        translate([0, 0, 42]) cube([20.4, 40.4, 36], center = true);
-        // 4x M3 heat-set insert mounting bores (d = 3.2 mm)
-        for (dx = [-14, 14], dy = [-24, 24]) {
-            translate([dx, dy, 25]) cylinder(h = 35, d = 3.2);
+        // Bottom 18650 Li-Ion battery cell pocket inside each foot half (68 x 22 x 10 mm)
+        translate([side * 38, 0, 4]) cube([24, 68, 10], center = true);
+        // Internal leg servo wire channel (d = 10 mm)
+        translate([side * 36, 0, -1]) cylinder(h = 105, d = 10);
+    }
+}
+
+module wheeled_base_shell() {
+    // Independent Left (+1) and Right (-1) Split-Platform Bipedal Feet & Legs
+    half_platform_foot(1);
+    half_platform_foot(-1);
+    // Pelvis bridge connecting left/right hip joints (z = 102 mm) to 3-Pivot Waist Gimbal
+    difference() {
+        hull() {
+            for (sx = [-36, 36]) translate([sx, 0, 102]) sphere(d = 28);
+            translate([0, 0, 106]) cylinder(h = 8, d = 56);
         }
-        // Center 6 mm daisy-chain wire pass-through bore
-        translate([0, 0, -1]) cylinder(h = 60, d = 10);
+        translate([0, 0, 90]) cylinder(h = 30, d = 14);
     }
 }
 
