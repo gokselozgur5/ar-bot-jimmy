@@ -1,0 +1,30 @@
+name: Jimmy Robotics & WebXR CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  rust-workspace-tests:
+    name: Cargo Test (jimmy-core + jimmy-daemon)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install stable Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Run workspace unit tests (12/12)
+        run: cargo test --workspace -- --nocapture
+
+      - name: Verify WebXR & URDF assets exist
+        run: |
+          test -f ros2/jimmy_description/urdf/jimmy_full_body.urdf.xacro
+          test -f web/index.html
+          test -f web/xr-app.js
+          test -f docs/media/quest3_passthrough_live.gif

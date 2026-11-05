@@ -26,6 +26,12 @@ flowchart LR
 | **Phase 6** | Expressive Visor & 3D Fingers | [`visor-face.js`](web/visor-face.js), [`jimmy-model.js`](web/jimmy-model.js) (Blinking eyes & 3D phalanges) | Verified |
 | **Phase 7** | 3-Pivot Inverse Kinematics | [`ik.rs`](crates/jimmy-core/src/ik.rs) (`solve_right_arm_ik` closed-form desk reach solver) | Verified |
 | **Phase 8** | Quest 3 3D Laser & Holo-Menu | [`holo-menu.js`](web/holo-menu.js), [`xr-app.js`](web/xr-app.js) (3D spatial menu & controller raycaster) | Verified |
+| **Phase 9** | Live LLM Chat & ROS 2 Bridge | [`llm-chat.js`](web/llm-chat.js), [`ros2_bridge.rs`](crates/jimmy-core/src/ros2_bridge.rs) (`Ros2JointState17` `/joint_states`) | Verified |
+| **Phase 10** | Telemetry & Control Daemon | [`crates/jimmy-daemon/`](crates/jimmy-daemon/src/main.rs) (`127.0.0.1:8765` live JSON & IK endpoint) | Verified |
+| **Phase 11** | Quest 3 Spatial Grab-and-Place | [`spatial-grab.js`](web/spatial-grab.js) (Grip squeeze placement & Desk Anchor Ring) | Verified |
+| **Phase 12** | Interactive 3D IK Target Orb | [`ik-target.js`](web/ik-target.js) (Real-time 3-pivot arm & gaze tracking orb) | Verified |
+| **Phase 13** | Hardware Harness & Servo ID | [`WIRING_AND_BRINGUP.md`](docs/hardware/WIRING_AND_BRINGUP.md), [`protocol.rs`](crates/jimmy-core/src/protocol.rs) (`encode_set_servo_id`) | Verified |
+| **Phase 14** | GitHub Actions CI & Matrix | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (`12/12` workspace unit tests) | Verified |
 
 ## Meta Quest 3 WebXR Passthrough & Mass Effect Omni-HUD
 
