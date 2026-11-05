@@ -27,12 +27,14 @@ const omniHud = createMassEffectOmniHud();
 jimmy.rightArm.palm.add(omniHud.group);
 
 const NAMES = ['PresentPalmHologram', 'CyberClippyLean', 'ItalianShrug', 'FriendlyWave'];
-const holoMenu = createSpatialHoloMenu([...NAMES, 'Live3dIkOrb']);
+const ALL_MODES = [...NAMES, 'Live3dIkOrb'];
+const holoMenu = createSpatialHoloMenu(ALL_MODES);
 jimmy.root.add(holoMenu.menuGroup);
 const ikOrb = createInteractiveIkOrb(jimmy.root);
 window.toggleJimmyIkOrb = () => {
   const on = ikOrb.toggle();
   omniHud.updateText('Live 3D IK Orb', on ? '3-Pivot IK tracking floating Desk Orb!' : 'Returned to gesture preset mode.');
+  playRobotVoice(1);
 };
 const triggerMenuAction = (g) => (g === 'Live3dIkOrb' ? window.toggleJimmyIkOrb() : window.setJimmyGesture(g));
 const spatialGrab = setupSpatialGrabAndPlace(renderer, jimmy.root, holoMenu.buttons, triggerMenuAction);
@@ -50,8 +52,8 @@ for (const i of [0, 1]) {
     raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMat);
     const hits = raycaster.intersectObjects(holoMenu.buttons);
     if (hits.length > 0) { triggerMenuAction(hits[0].object.userData.gestureName); return; }
-    idx = (idx + 1) % NAMES.length;
-    window.setJimmyGesture(NAMES[idx]);
+    idx = (idx + 1) % ALL_MODES.length;
+    triggerMenuAction(ALL_MODES[idx]);
   });
 }
 
@@ -78,6 +80,7 @@ function playRobotVoice(k) {
   } catch (_) {}
 }
 window.setJimmyGesture = (name, customMsg = null) => {
+  if (ikOrb.orb.visible) ikOrb.toggle();
   target = POSES[name] || POSES.PresentPalmHologram;
   const msg = customMsg || target.msg;
   omniHud.updateText(name, msg);
