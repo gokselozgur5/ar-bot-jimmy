@@ -7,6 +7,8 @@ import { createSpatialHoloMenu } from './holo-menu.js';
 import { setupLiveConversation } from './llm-chat.js';
 import { setupSpatialGrabAndPlace } from './spatial-grab.js';
 import { createInteractiveIkOrb } from './ik-target.js';
+import { setupCadStlOverlay } from './stl-loader.js';
+import { setupMirrorHandTeleop } from './hand-teleop.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.05, 20);
@@ -31,10 +33,20 @@ const ALL_MODES = [...NAMES, 'Live3dIkOrb'];
 const holoMenu = createSpatialHoloMenu(ALL_MODES);
 jimmy.root.add(holoMenu.menuGroup);
 const ikOrb = createInteractiveIkOrb(jimmy.root);
+const cadStl = setupCadStlOverlay(jimmy);
+const handTeleop = setupMirrorHandTeleop(renderer);
 window.toggleJimmyIkOrb = () => {
   const on = ikOrb.toggle();
   omniHud.updateText('Live 3D IK Orb', on ? '3-Pivot IK tracking floating Desk Orb!' : 'Returned to gesture preset mode.');
   playRobotVoice(1);
+};
+window.toggleJimmyCadStl = () => {
+  const on = cadStl.toggle();
+  omniHud.updateText('3D-Printable CAD STL', on ? 'Showing OpenSCAD 2-manifold STL wireframe!' : 'CAD STL overlay hidden.');
+};
+window.toggleJimmyTeleop = () => {
+  const on = handTeleop.toggle();
+  omniHud.updateText('Mirror Hand Teleop', on ? 'Mirroring your real right hand & fingers!' : 'Teleop off.');
 };
 const triggerMenuAction = (g) => (g === 'Live3dIkOrb' ? window.toggleJimmyIkOrb() : window.setJimmyGesture(g));
 const spatialGrab = setupSpatialGrabAndPlace(renderer, jimmy.root, holoMenu.buttons, triggerMenuAction);
@@ -104,6 +116,7 @@ renderer.setAnimationLoop((t) => {
   jimmy.leftArm.sh.rotation.z += (target.lSR - jimmy.leftArm.sh.rotation.z) * s;
   jimmy.rightArm.fingers.forEach((f, i) => { f.rotation.x += (target.fG[i] - f.rotation.x) * s; });
   ikOrb.update(t, jimmy);
+  handTeleop.update(jimmy);
   omniHud.core.rotation.y = t * 0.0025;
   omniHud.ring.rotation.z = -t * 0.0018;
   omniHud.screen.lookAt(camera.position);
