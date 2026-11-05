@@ -20,7 +20,10 @@ flowchart LR
 | **Phase 2** | Serial Bus Servo Bridge | [`bus.rs`](crates/jimmy-core/src/bus.rs) (`ActuatorBus` trait & thermal guard) | Verified |
 | **Phase 3** | Embodied LLM Puppeteer | [`puppeteer.rs`](crates/jimmy-core/src/puppeteer.rs) (`CyberClippyLean`, `PresentPalmHologram`) | Verified |
 | **Phase 4** | OpenXR / AR Spatial Link | [`ar_anchor.rs`](crates/jimmy-core/src/ar_anchor.rs), [`web/index.html`](web/index.html) (Mass Effect Omni-HUD) | Verified |
-| **Phase 5** | Modular 3-Finger Hand | [`hand.rs`](crates/jimmy-core/src/hand.rs) (`ThreeFingerHand` hot-plug bus expansion) | Verified |
+| **Phase 5** | Modular 3-Finger Hand | [`hand.rs`](crates/jimmy-core/src/hand.rs) (`ThreeFingerHand` + compliant grasp torque limit) | Verified |
+| **Phase 6** | Expressive Visor & 3D Fingers | [`visor-face.js`](web/visor-face.js), [`jimmy-model.js`](web/jimmy-model.js) (Blinking eyes & 3D phalanges) | Verified |
+| **Phase 7** | 3-Pivot Inverse Kinematics | [`ik.rs`](crates/jimmy-core/src/ik.rs) (`solve_right_arm_ik` closed-form desk reach solver) | Verified |
+| **Phase 8** | Quest 3 3D Laser & Holo-Menu | [`holo-menu.js`](web/holo-menu.js), [`xr-app.js`](web/xr-app.js) (3D spatial menu & controller raycaster) | Verified |
 
 ## Meta Quest 3 WebXR Passthrough & Mass Effect Omni-HUD
 
