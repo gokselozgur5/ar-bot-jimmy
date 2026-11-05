@@ -11,7 +11,13 @@
 | **Phase 5: 3-Finger Hand** | Hot-plug wrist socket expansion (`IDs 15..=20`) | Merged (`#5`, `#10`, `#11`) | Compliant grasp torque cutoff merged (`#16`, `#26`) |
 | **Phase 6: Visor Eyes & 3D Fingers** | Dynamic Cyber-Clippy blinking visor & 3-finger 3D meshes | Merged (`#31`, `#36`) | Verified in WebXR scene |
 | **Phase 7: 3-Pivot Analytical IK** | Closed-form shoulder/elbow Inverse Kinematics (`ik.rs`) | Merged (`#32`, `#34`, `#35`) | Verified `< 0.1 mm` FK round-trip |
-| **Phase 8: 3D Laser & Holo-Menu** | Quest 3 3D controller laser raycaster & floating holo-buttons | Merged (`#33`, `#37`) | Live on GitHub Pages HTTPS |
+| **Phase 8: 3D Laser & Holo-Menu** | Quest 3 3D controller laser raycaster & floating holo-buttons | Merged (`#33`, `#37`, `#38`) | Live on GitHub Pages HTTPS |
+| **Phase 9: Live LLM Chat & ROS 2** | TR/EN voice/text LLM chat, `Ros2JointState17` `/joint_states`, Quest 3 GIF | Merged (`#39`, `#40`, `#41`, `#42`) | Field-tested on Meta Quest 3 |
+| **Phase 10: `jimmy-daemon` Server** | Standalone Rust HTTP/JSON telemetry & IK daemon (`127.0.0.1:8765`) | Merged (`#43`, `#48`) | Verified (`daemon_routes_gesture_and_ik_requests`) |
+| **Phase 11: Spatial Grab & Place** | Quest 3 `squeezestart`/`squeezeend` desk placement & Anchor Ring | Merged (`#44`, `#49`) | Live in WebXR Passthrough |
+| **Phase 12: 3D IK Target Orb** | Interactive 3D Desk Holo-Orb driving real-time 3-pivot arm & gaze | Merged (`#45`, `#50`) | Live in WebXR Passthrough |
+| **Phase 13: Wiring & ID Provisioner**| `encode_set_servo_id` EEPROM writer & 12V/7.4V wiring harness guide | Merged (`#46`, `#51`) | Verified (`sts3215_set_servo_id_encodes_valid_eeprom_frame`) |
+| **Phase 14: GitHub Actions CI** | Automated `cargo test --workspace` (`12/12`) & asset verification | Merged (`#47`, `#52`) | Enforced on `main` & PRs |
 
 ## Hardware Bill of Materials (BOM) Target
 
