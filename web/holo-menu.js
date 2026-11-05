@@ -20,10 +20,10 @@ export function createSpatialHoloMenu(names) {
     ctx.fillText(name.replace(/([A-Z])/g, ' $1').trim(), 16, 38);
 
     const mesh = new THREE.Mesh(
-      new THREE.PlaneGeometry(0.14, 0.036),
+      new THREE.PlaneGeometry(0.18, 0.044),
       new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, side: THREE.DoubleSide })
     );
-    mesh.position.y = (1.5 - idx) * 0.045;
+    mesh.position.y = (2.0 - idx) * 0.052;
     mesh.userData.gestureName = name;
     menuGroup.add(mesh);
     buttons.push(mesh);
