@@ -24,6 +24,11 @@
 | **Phase 18: Curved Sci-Fi Chassis** | Astro-Bot/EVE curved PBR clearcoat chassis + Three.js `STLLoader` | Merged (`#58`, `#63`) | Live on GitHub Pages HTTPS |
 | **Phase 19: Hand Mirror Teleop** | Real-time Quest 3 bare-hand arm & 3-finger shadowing (`hand-teleop.js`) | Merged (`#59`, `#64`) | Live on GitHub Pages HTTPS |
 | **Phase 20: 3D Printing & Slicer** | PrusaSlicer settings table, Blender guide & STL CI checks | Merged (`#60`, `#65`) | Ready for Prusa 3D printing |
+| **Phase 21: Bipedal Leg Kinematics** | `bipedal.rs` level-foot walk cycle, ZMP support polygon & URDF foot links | Merged (`#76`, `#81`) | Verified (`14/14` workspace unit tests) |
+| **Phase 22: Split-Foot STL Set** | 4 movable `.scad` & 2-manifold `.stl` foot/leg parts (`01a..01d`) | Merged (`#77`, `#82`) | Verified `Simple: yes` in CGAL |
+| **Phase 23: WebXR Daemon Bridge** | Live HTTP telemetry client (`daemon-client.js`) to `127.0.0.1:8765` | Merged (`#78`, `#83`) | Live with offline simulation fallback |
+| **Phase 24: Spatial Desk Widgets** | 3D 17-Servo load bar chart & 25:00 Focus Pomodoro ring (`desk-widgets.js`) | Merged (`#79`, `#84`) | Live on GitHub Pages HTTPS |
+| **Phase 25: `v1.0.0` Release** | Production Assembly & BOM Manual (`ASSEMBLY_AND_BOM_V1.md`) + `v1.0.0` STLs | Merged (`#80`, `#85`) | Production Release `v1.0.0` Shipped |
 
 ## Hardware Bill of Materials (BOM) Target
 

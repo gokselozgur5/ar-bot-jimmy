@@ -38,8 +38,13 @@ flowchart LR
 | **Phase 18** | Curved Sci-Fi Body & STL Viewer | [`jimmy-materials.js`](web/jimmy-materials.js), [`jimmy-model.js`](web/jimmy-model.js), [`stl-loader.js`](web/stl-loader.js) | Verified |
 | **Phase 19** | Bare-Hand Mirror Teleop Mode | [`hand-teleop.js`](web/hand-teleop.js) (Real-time right arm & 3-finger hand shadowing) | Verified |
 | **Phase 20** | Prusa 3D Printing & Slicer Guide | [`3D_PRINTING_GUIDE.md`](docs/hardware/3D_PRINTING_GUIDE.md), [`cad_parts_preview.png`](docs/media/cad_parts_preview.png) | Verified |
+| **Phase 21** | Split-Foot Bipedal Kinematics | [`bipedal.rs`](crates/jimmy-core/src/bipedal.rs), [`jimmy_full_body.urdf.xacro`](ros2/jimmy_description/urdf/jimmy_full_body.urdf.xacro) (Level-foot gait & ZMP check) | Verified |
+| **Phase 22** | Split-Foot & Leg STL Part Set | [`cad/scad/01a..01d`](cad/scad/01a_left_foot_half_platform.scad), [`cad/stl/01a..01d`](cad/stl/) (4 independent 2-manifold leg/foot STLs) | Verified |
+| **Phase 23** | Live WebXR Daemon Telemetry | [`daemon-client.js`](web/daemon-client.js) (`127.0.0.1:8765` live gesture/IK bridge with offline fallback) | Verified |
+| **Phase 24** | Spatial Desk Companion HUD | [`desk-widgets.js`](web/desk-widgets.js) (3D 17-Servo load bar graph & 25:00 Pomodoro ring) | Verified |
+| **Phase 25** | `v1.0.0` Production Release | [`ASSEMBLY_AND_BOM_V1.md`](docs/hardware/ASSEMBLY_AND_BOM_V1.md), [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (`14/14` workspace tests & 11 STL release assets) | Verified |
 
-## 3D-Printable 7-Part CAD Assembly (`cad/stl/` & `cad/scad/`)
+## 3D-Printable 11-Part CAD Assembly (`cad/stl/` & `cad/scad/`)
 
 ![Jimmy 3D-Printable CAD Assembly](docs/media/cad_parts_preview.png)
 
