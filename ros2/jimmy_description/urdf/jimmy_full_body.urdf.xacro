@@ -3,8 +3,25 @@
   <xacro:property name="robot_height" value="0.38" />
   <link name="base_footprint"/>
   <link name="wheeled_leg_base_link"/>
+  <link name="left_foot_half_platform_link"/>
+  <link name="right_foot_half_platform_link"/>
   <link name="torso_link"/>
   <link name="head_visor_link"/>
+
+  <joint name="left_ankle_pitch_joint" type="revolute">
+    <parent link="wheeled_leg_base_link"/>
+    <child link="left_foot_half_platform_link"/>
+    <origin xyz="-0.036 0 0.018" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.85" upper="0.85" effort="3.0" velocity="4.0"/>
+  </joint>
+  <joint name="right_ankle_pitch_joint" type="revolute">
+    <parent link="wheeled_leg_base_link"/>
+    <child link="right_foot_half_platform_link"/>
+    <origin xyz="0.036 0 0.018" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.85" upper="0.85" effort="3.0" velocity="4.0"/>
+  </joint>
 
   <!-- 3-Point Waist Pivot (Yaw / Pitch / Roll) -->
   <joint name="waist_yaw_joint" type="revolute">

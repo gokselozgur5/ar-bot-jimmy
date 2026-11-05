@@ -1,6 +1,7 @@
 //! Core robotics, LLM gesture puppeteer, and AR spatial anchor engine for Jimmy.
 
 pub mod ar_anchor;
+pub mod bipedal;
 pub mod bus;
 pub mod cad_export;
 pub mod hand;
@@ -138,5 +139,13 @@ mod tests {
         assert!(stl.starts_with("solid sts3215_gimbal_bracket\n"));
         assert_eq!(stl.matches("facet normal").count(), 12);
         assert!(stl.ends_with("endsolid sts3215_gimbal_bracket\n"));
+    }
+
+    #[test]
+    fn bipedal_walk_cycle_keeps_split_platform_soles_level_and_zmp_stable() {
+        let frame = super::bipedal::sample_bipedal_walk_cycle(0.95);
+        assert!(frame.left.sole_pitch_world().abs() < 1e-12);
+        assert!(frame.right.sole_pitch_world().abs() < 1e-12);
+        assert!(super::bipedal::is_within_split_foot_support(frame.zmp_offset_x_m));
     }
 }
