@@ -1,54 +1,56 @@
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+import { createSciFiMaterials, buildCurvedHeadAndBase } from './jimmy-materials.js';
 
 export function createJimmyRobot(visorTexture = null) {
   const root = new THREE.Group();
-  const white = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, roughness: 0.25, metalness: 0.2 });
-  const blue = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.3, metalness: 0.5 });
-  const visorMat = visorTexture
-    ? new THREE.MeshBasicMaterial({ map: visorTexture })
-    : new THREE.MeshStandardMaterial({ color: 0x050814, emissive: 0x38bdf8, emissiveIntensity: 0.45 });
-  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.095, 0.03, 24), blue);
-  base.position.y = 0.015;
-  root.add(base);
-  for (const s of [-1, 1]) {
-    const leg = new THREE.Mesh(new THREE.BoxGeometry(0.042, 0.11, 0.055), white);
-    leg.position.set(s * 0.045, 0.085, 0);
-    root.add(leg);
-  }
+  const m = createSciFiMaterials(visorTexture);
   const waistPivot = new THREE.Group();
   waistPivot.position.set(0, 0.14, 0);
-  const torso = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.13, 0.075), white);
-  torso.position.y = 0.065;
-  const chestCam = new THREE.Mesh(new THREE.SphereGeometry(0.018, 16, 16), blue);
-  chestCam.position.set(0, 0.07, 0.038);
   const neckPivot = new THREE.Group();
-  neckPivot.position.set(0, 0.14, 0);
-  const head = new THREE.Mesh(new THREE.BoxGeometry(0.085, 0.075, 0.075), white);
-  head.position.y = 0.04;
-  const visor = new THREE.Mesh(new THREE.PlaneGeometry(0.072, 0.045), visorMat);
-  visor.position.set(0, 0.042, 0.0385);
-  neckPivot.add(head, visor);
-  waistPivot.add(torso, chestCam, neckPivot);
+  neckPivot.position.set(0, 0.142, 0);
+  buildCurvedHeadAndBase(root, waistPivot, neckPivot, m);
+
+  // Sculpted Astro-Bot / EVE Hourglass Torso Carapace + Segmented Waist Bellows
+  const waistCore = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.042, 0.032, 28), m.titanium);
+  waistCore.position.y = 0.012;
+  const lowerTorso = new THREE.Mesh(new THREE.CylinderGeometry(0.056, 0.038, 0.068, 32), m.armor);
+  lowerTorso.scale.set(1.08, 1.0, 0.82); lowerTorso.position.y = 0.054;
+  const upperChest = new THREE.Mesh(new THREE.SphereGeometry(0.058, 36, 28), m.armor);
+  upperChest.scale.set(1.16, 0.88, 0.78); upperChest.position.y = 0.098;
+  const chestBezel = new THREE.Mesh(new THREE.TorusGeometry(0.019, 0.0035, 14, 32), m.trim);
+  chestBezel.position.set(0, 0.095, 0.044);
+  const chestCore = new THREE.Mesh(new THREE.CircleGeometry(0.015, 28), m.glowCyan);
+  chestCore.position.set(0, 0.095, 0.046);
+  const collarRing = new THREE.Mesh(new THREE.TorusGeometry(0.026, 0.003, 12, 28), m.glowCyan);
+  collarRing.rotation.x = Math.PI / 2; collarRing.position.y = 0.138;
+  waistPivot.add(waistCore, lowerTorso, upperChest, chestBezel, chestCore, collarRing, neckPivot);
   root.add(waistPivot);
+
   const makeArm = (s) => {
     const sh = new THREE.Group();
-    sh.position.set(s * 0.072, 0.115, 0);
-    const upper = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.015, 0.075), white);
-    upper.position.y = -0.04;
+    sh.position.set(s * 0.076, 0.114, 0);
+    const pauldron = new THREE.Mesh(new THREE.SphereGeometry(0.025, 24, 20), m.trim);
+    const shRing = new THREE.Mesh(new THREE.TorusGeometry(0.024, 0.0022, 10, 24), m.glowCyan);
+    shRing.rotation.y = Math.PI / 2;
+    const upper = new THREE.Mesh(new THREE.CapsuleGeometry(0.0155, 0.052, 12, 24), m.armor);
+    upper.position.y = -0.042;
     const elbow = new THREE.Group();
-    elbow.position.y = -0.08;
-    const fore = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.018, 0.075), white);
+    elbow.position.y = -0.082;
+    const elbowJoint = new THREE.Mesh(new THREE.SphereGeometry(0.017, 20, 16), m.titanium);
+    const fore = new THREE.Mesh(new THREE.CapsuleGeometry(0.0145, 0.048, 12, 24), m.armor);
     fore.position.y = -0.038;
+    const wristRing = new THREE.Mesh(new THREE.TorusGeometry(0.015, 0.0022, 10, 24), m.glowAmber);
+    wristRing.rotation.x = Math.PI / 2; wristRing.position.y = -0.072;
     const palm = new THREE.Group();
-    palm.position.set(0, -0.08, 0.01);
-    const fingers = [-0.012, 0, 0.012].map((fx) => {
-      const f = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.024, 0.006), blue);
-      f.position.set(fx, -0.012, 0.005);
-      palm.add(f);
-      return f;
+    palm.position.set(0, -0.08, 0.008);
+    const palmShell = new THREE.Mesh(new THREE.SphereGeometry(0.014, 20, 16), m.trim);
+    palmShell.scale.set(1.1, 0.8, 0.65); palm.add(palmShell);
+    const fingers = [-0.011, 0, 0.011].map((fx) => {
+      const f = new THREE.Mesh(new THREE.CapsuleGeometry(0.0038, 0.018, 8, 16), m.armor);
+      f.position.set(fx, -0.014, 0.004); palm.add(f); return f;
     });
-    elbow.add(fore, palm);
-    sh.add(new THREE.Mesh(new THREE.SphereGeometry(0.022, 16, 16), blue), upper, elbow);
+    elbow.add(elbowJoint, fore, wristRing, palm);
+    sh.add(pauldron, shRing, upper, elbow);
     waistPivot.add(sh);
     return { sh, elbow, palm, fingers };
   };
