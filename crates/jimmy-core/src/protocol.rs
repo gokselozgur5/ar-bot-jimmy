@@ -3,6 +3,7 @@
 pub const HEADER: u8 = 0xFF;
 pub const INST_WRITE: u8 = 0x03;
 pub const INST_SYNC_WRITE: u8 = 0x83;
+pub const REG_ID: u8 = 0x05;
 pub const REG_GOAL_POSITION_L: u8 = 0x2A;
 
 /// Converts radians (`-pi..+pi`) to 12-bit magnetic encoder ticks (`0..=4095`, center `2048`).
@@ -42,4 +43,11 @@ pub fn verify_packet(frame: &[u8]) -> bool {
     }
     let expected_len = frame[3] as usize + 4;
     frame.len() == expected_len && compute_checksum(&frame[2..frame.len() - 1]) == frame[frame.len() - 1]
+}
+
+/// Encodes an EEPROM write frame (`INST_WRITE = 0x03`, `REG_ID = 0x05`) to assign `new_id` (`1..=17`).
+pub fn encode_set_servo_id(current_id: u8, new_id: u8) -> [u8; 8] {
+    let mut pkt = [HEADER, HEADER, current_id, 0x04, INST_WRITE, REG_ID, new_id, 0x00];
+    pkt[7] = compute_checksum(&pkt[2..7]);
+    pkt
 }
