@@ -18,6 +18,11 @@
       <button class="me-btn" onclick="setJimmyGesture('ItalianShrug')">Italian Shrug</button>
       <button class="me-btn" onclick="setJimmyGesture('FriendlyWave')">Friendly Wave</button>
     </div>
+    <div style="display:flex;gap:6px;margin-top:10px;">
+      <input id="jimmy-input" placeholder="Talk to Jimmy (TR/EN)..." style="flex:1;background:#020617;color:#f8fafc;border:1px solid #38bdf8;border-radius:6px;padding:6px 8px;font-size:0.78rem;" onkeydown="if(event.key==='Enter')askJimmyText()" />
+      <button class="me-btn" onclick="askJimmyText()">Send</button>
+      <button class="me-btn" onclick="startJimmyVoiceMic()" title="Voice Mic">🎙️</button>
+    </div>
     <pre id="telemetry" style="margin-top:10px;font-size:0.75rem;color:#fbbf24;white-space:pre-wrap;"></pre>
   </div>
   <script type="module" src="./xr-app.js"></script>

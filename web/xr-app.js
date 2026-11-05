@@ -4,6 +4,7 @@ import { createJimmyRobot } from './jimmy-model.js';
 import { createMassEffectOmniHud } from './mass-effect-hud.js';
 import { createVisorFace } from './visor-face.js';
 import { createSpatialHoloMenu } from './holo-menu.js';
+import { setupLiveConversation } from './llm-chat.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.05, 20);
@@ -66,13 +67,15 @@ function playRobotVoice(k) {
     });
   } catch (_) {}
 }
-window.setJimmyGesture = (name) => {
+window.setJimmyGesture = (name, customMsg = null) => {
   target = POSES[name] || POSES.PresentPalmHologram;
-  omniHud.updateText(name, target.msg);
+  const msg = customMsg || target.msg;
+  omniHud.updateText(name, msg);
   visorFace.setExpression(name);
-  document.getElementById('telemetry').textContent = `[LLM Speech]: "${target.msg}"`;
+  document.getElementById('telemetry').textContent = `[LLM Speech]: "${msg}"`;
   playRobotVoice(NAMES.indexOf(name));
 };
+setupLiveConversation(({ gesture, msg }) => window.setJimmyGesture(gesture, msg));
 window.setJimmyGesture('PresentPalmHologram');
 
 renderer.setAnimationLoop((t) => {
