@@ -7,6 +7,7 @@ pub mod ik;
 pub mod kinematics;
 pub mod protocol;
 pub mod puppeteer;
+pub mod ros2_bridge;
 pub mod trajectory;
 
 /// Robot physical height in meters (38 cm desktop mini-humanoid).
@@ -21,6 +22,7 @@ mod tests {
     use super::kinematics::{FullBodyPose, Vec3};
     use super::protocol::{encode_sync_write_positions, rad_to_ticks, verify_packet};
     use super::puppeteer::{GestureIntent, LlmPuppeteerCommand};
+    use super::ros2_bridge::Ros2JointState17;
     use super::trajectory::{cubic_smoothstep, interpolate_full_body_cubic};
 
     #[test]
@@ -111,5 +113,14 @@ mod tests {
         pose.right_arm = arm;
         let fk = pose.right_wrist_flange_position();
         assert!((fk.x - target.x).abs() < 1e-4 && (fk.z - target.z).abs() < 1e-4);
+    }
+
+    #[test]
+    fn ros2_joint_state_serializes_17dof_rosbridge_payload() {
+        let pose = FullBodyPose::default();
+        let js = Ros2JointState17::from_pose_and_fingers(&pose, [0.5, 0.0, 1.2]);
+        let payload = js.to_rosbridge_json();
+        assert!(payload.contains("\"topic\":\"/joint_states\""));
+        assert!(payload.contains("\"right_index_joint\""));
     }
 }
