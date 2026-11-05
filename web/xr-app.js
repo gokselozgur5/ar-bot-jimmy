@@ -5,6 +5,7 @@ import { createMassEffectOmniHud } from './mass-effect-hud.js';
 import { createVisorFace } from './visor-face.js';
 import { createSpatialHoloMenu } from './holo-menu.js';
 import { setupLiveConversation } from './llm-chat.js';
+import { setupSpatialGrabAndPlace } from './spatial-grab.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.05, 20);
@@ -27,6 +28,7 @@ jimmy.rightArm.palm.add(omniHud.group);
 const NAMES = ['PresentPalmHologram', 'CyberClippyLean', 'ItalianShrug', 'FriendlyWave'];
 const holoMenu = createSpatialHoloMenu(NAMES);
 jimmy.root.add(holoMenu.menuGroup);
+const spatialGrab = setupSpatialGrabAndPlace(renderer, jimmy.root);
 const raycaster = new THREE.Raycaster();
 const tempMat = new THREE.Matrix4();
 let idx = 0;
@@ -81,6 +83,7 @@ window.setJimmyGesture('PresentPalmHologram');
 renderer.setAnimationLoop((t) => {
   const s = 0.08;
   visorFace.update(t);
+  spatialGrab.update(t);
   jimmy.waistPivot.rotation.x += (target.wP - jimmy.waistPivot.rotation.x) * s;
   jimmy.neckPivot.rotation.z += (target.nR - jimmy.neckPivot.rotation.z) * s;
   jimmy.rightArm.sh.rotation.x += (target.rSP - jimmy.rightArm.sh.rotation.x) * s;
