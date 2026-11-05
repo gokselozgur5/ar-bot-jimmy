@@ -9,6 +9,7 @@ import { setupSpatialGrabAndPlace } from './spatial-grab.js?v=5';
 import { createInteractiveIkOrb } from './ik-target.js?v=5';
 import { setupCadStlOverlay } from './stl-loader.js?v=5';
 import { setupMirrorHandTeleop } from './hand-teleop.js?v=5';
+import { createDaemonBridge } from './daemon-client.js?v=5';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.05, 20);
@@ -35,6 +36,7 @@ jimmy.root.add(holoMenu.menuGroup);
 const ikOrb = createInteractiveIkOrb(jimmy.root);
 const cadStl = setupCadStlOverlay(jimmy);
 const handTeleop = setupMirrorHandTeleop(renderer);
+const daemonBridge = createDaemonBridge();
 window.toggleJimmyIkOrb = () => {
   const on = ikOrb.toggle();
   omniHud.updateText('Live 3D IK Orb', on ? '3-Pivot IK tracking floating Desk Orb!' : 'Returned to gesture preset mode.');
@@ -102,6 +104,7 @@ window.setJimmyGesture = (name, customMsg = null) => {
   omniHud.updateText(name, msg);
   visorFace.setExpression(name);
   document.getElementById('telemetry').textContent = `[LLM Speech]: "${msg}"`;
+  daemonBridge.syncGesture(name);
   playRobotVoice(NAMES.indexOf(name));
 };
 setupLiveConversation(({ gesture, msg }) => window.setJimmyGesture(gesture, msg));
