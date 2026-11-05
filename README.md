@@ -31,7 +31,17 @@ flowchart LR
 | **Phase 11** | Quest 3 Spatial Grab-and-Place | [`spatial-grab.js`](web/spatial-grab.js) (Grip squeeze placement & Desk Anchor Ring) | Verified |
 | **Phase 12** | Interactive 3D IK Target Orb | [`ik-target.js`](web/ik-target.js) (Real-time 3-pivot arm & gaze tracking orb) | Verified |
 | **Phase 13** | Hardware Harness & Servo ID | [`WIRING_AND_BRINGUP.md`](docs/hardware/WIRING_AND_BRINGUP.md), [`protocol.rs`](crates/jimmy-core/src/protocol.rs) (`encode_set_servo_id`) | Verified |
-| **Phase 14** | GitHub Actions CI & Matrix | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (`12/12` workspace unit tests) | Verified |
+| **Phase 14** | GitHub Actions CI & Matrix | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (`13/13` workspace unit tests) | Verified |
+| **Phase 15** | Bare-Hand Poke & Desk Placement | [`spatial-grab.js`](web/spatial-grab.js), [`quest3_passthrough_live.gif`](docs/media/quest3_passthrough_live.gif) (Desk placement v3) | Verified |
+| **Phase 16** | Rust Watertight STL Exporter | [`cad_export.rs`](crates/jimmy-core/src/cad_export.rs) (`StlBoxSpec::to_ascii_stl` 12-facet solid) | Verified |
+| **Phase 17** | 7-Part Printable OpenSCAD & STL | [`cad/scad/`](cad/scad/00_jimmy_full_assembly.scad), [`cad/stl/`](cad/stl/) (7 manifold Prusa-ready `.stl` files) | Verified |
+| **Phase 18** | Curved Sci-Fi Body & STL Viewer | [`jimmy-materials.js`](web/jimmy-materials.js), [`jimmy-model.js`](web/jimmy-model.js), [`stl-loader.js`](web/stl-loader.js) | Verified |
+| **Phase 19** | Bare-Hand Mirror Teleop Mode | [`hand-teleop.js`](web/hand-teleop.js) (Real-time right arm & 3-finger hand shadowing) | Verified |
+| **Phase 20** | Prusa 3D Printing & Slicer Guide | [`3D_PRINTING_GUIDE.md`](docs/hardware/3D_PRINTING_GUIDE.md), [`cad_parts_preview.png`](docs/media/cad_parts_preview.png) | Verified |
+
+## 3D-Printable 7-Part CAD Assembly (`cad/stl/` & `cad/scad/`)
+
+![Jimmy 3D-Printable CAD Assembly](docs/media/cad_parts_preview.png)
 
 ## Meta Quest 3 WebXR Passthrough & Mass Effect Omni-HUD
 
