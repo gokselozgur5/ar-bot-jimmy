@@ -1,4 +1,4 @@
 # GitHub Linguist language overrides
-# Web client frontend and CAD assets
-web/* linguist-documentation=false
+# Web client frontend demo assets
+web/** linguist-documentation=true
 cad/stl/* binary
